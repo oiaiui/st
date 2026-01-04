@@ -4,6 +4,9 @@
 
 include config.mk
 
+# personal header for colour
+CPPFLAGS += -I$(HOME)/.local/include
+
 SRC = st.c x.c boxdraw.c hb.c
 OBJ = $(SRC:.c=.o)
 
