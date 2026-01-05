@@ -266,6 +266,8 @@ static char *opt_line  = NULL;
 static char *opt_name  = NULL;
 static char *opt_title = NULL;
 
+static int focused = 0; // alpha+focus addition
+
 static int oldbutton = 3; /* button event on startup: 3 = release */
 static int cursorblinks = 0;
 
@@ -788,43 +790,42 @@ xloadcolor(int i, const char *name, Color *ncolor)
 	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, ncolor);
 }
 
+// alpha + focus addition
 void
-xloadcols(void)
+xloadalpha(void)
 {
-	int i;
-	static int loaded;
-	Color *cp;
-
-	if (loaded) {
-		for (cp = dc.col; cp < &dc.col[dc.collen]; ++cp)
-			XftColorFree(xw.dpy, xw.vis, xw.cmap, cp);
-	} else {
-		dc.collen = MAX(LEN(colorname), 256);
-		dc.col = xmalloc(dc.collen * sizeof(Color));
-	}
-
-	for (i = 0; i < dc.collen; i++)
-		if (!xloadcolor(i, NULL, &dc.col[i])) {
-			if (colorname[i])
-				die("could not allocate color '%s'\n", colorname[i]);
-			else
-				die("could not allocate color %d\n", i);
-		}
-
-	/* set alpha value of bg color */
-	if (opt_alpha)
-		alpha = strtof(opt_alpha, NULL);
-	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
-	dc.col[defaultbg].color.red =
-		((unsigned short)(dc.col[defaultbg].color.red * alpha)) & 0xff00;
-	dc.col[defaultbg].color.green =
-		((unsigned short)(dc.col[defaultbg].color.green * alpha)) & 0xff00;
-	dc.col[defaultbg].color.blue =
-		((unsigned short)(dc.col[defaultbg].color.blue * alpha)) & 0xff00;
+	float const usedAlpha = focused ? alpha : alphaUnfocused;
+	if (opt_alpha) alpha = strtof(opt_alpha, NULL);
+	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
 	dc.col[defaultbg].pixel &= 0x00FFFFFF;
-	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
-	loaded = 1;
+	dc.col[defaultbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
 }
+
+// xloadcols replacement provided by the alpha+focus patch
+ void
+ xloadcols(void)
+ {
+ 	static int loaded;
+ 	Color *cp;
+ 
+ 	if (!loaded) {
+ 		dc.collen = 1 + (defaultbg = MAX(LEN(colorname), 256));
+ 		dc.col = xmalloc((dc.collen) * sizeof(Color));
+ 	}
+ 
+ 	for (int i = 0; i+1 < dc.collen; ++i)
+ 		if (!xloadcolor(i, NULL, &dc.col[i])) {
+ 			if (colorname[i])
+ 				die("could not allocate color '%s'\n", colorname[i]);
+ 			else
+ 				die("could not allocate color %d\n", i);
+ 		}
+ 	if (dc.collen) // cannot die, as the color is already loaded.
+ 		xloadcolor(focused ?bg :bgUnfocused, NULL, &dc.col[defaultbg]);
+ 
+	xloadalpha();
+	loaded = 1;
+ }
 
 int
 xsetcolorname(int x, const char *name)
@@ -1932,11 +1933,21 @@ focus(XEvent *ev)
 		xseturgency(0);
 		if (IS_SET(MODE_FOCUS))
 			ttywrite("\033[I", 3, 0);
+		if (!focused) {
+			focused = 1;
+			xloadcols();
+			tfulldirt();
+		}
 	} else {
 		XUnsetICFocus(xw.xic);
 		win.mode &= ~MODE_FOCUSED;
 		if (IS_SET(MODE_FOCUS))
 			ttywrite("\033[O", 3, 0);
+		if (focused) {
+			focused = 0;
+			xloadcols();
+			tfulldirt();
+		}
 	}
 }
 
@@ -2428,6 +2439,7 @@ run:
 	config_init();
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
+	defaultbg = MAX(LEN(colorname), 256);
 	signal(SIGUSR1, reload);
 	tnew(cols, rows);
 	xinit(cols, rows);

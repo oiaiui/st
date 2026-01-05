@@ -11,7 +11,7 @@
 static char *font = "Ricty Diminished NF:pixelsize=28:antialias=true:autohint=true";
 static char *font2[] = {"Liberation Mono:pixelsize=12:antialias=true:autohint=true",
 						"JetBrainsMono Nerd Font :pixelsize=15:antialias=true:autohint=true" };
-static int borderpx = 4;
+static int borderpx = 0;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -118,7 +118,8 @@ char *termname = "st-256color";
 unsigned int tabspaces = 4;
 
 /* bg opacity */
-float alpha = 1.0;
+float alpha = 0.9;
+float alphaUnfocused = 0.8;
 
 static const char *colorname[] = {
 	/* 8 normal colors */
@@ -157,6 +158,9 @@ unsigned int defaultfg = 259;
 unsigned int defaultbg = 258;
 unsigned int defaultcs = 256;
 unsigned int defaultrcs = 257;
+
+// alpha+focus patch addition
+unsigned int bg = 17, bgUnfocused = 16;
 
 /*
  * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81

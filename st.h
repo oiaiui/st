@@ -95,6 +95,7 @@ typedef struct {
 
 void die(const char *, ...);
 void redraw(void);
+void tfulldirt(void); // alpha+focus addition
 void draw(void);
 
 void externalpipe(const Arg *);
@@ -154,5 +155,6 @@ extern unsigned int defaultbg;
 extern unsigned int defaultcs;
 extern const int boxdraw, boxdraw_bold, boxdraw_braille;
 extern float alpha;
+extern float alphaUnfocused; // alpha+focus addition
 extern MouseKey mkeys[];
 extern int ximspot_update_interval;
