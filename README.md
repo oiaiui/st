@@ -1,136 +1,17 @@
-# St (Suckless Terminal)
+# st
+[st](https://st.suckless.org/), or "simple terminal", is a fine piece of software by [suckless.org](https://suckless.org/), notable for making software that sucks less. Since it is pretty minimal out of the box, additional features are added by patching the source code. I'm sure you have read all of this before.
 
-## Xresources live-reload demo
+## "snazzy terminal"
+"st" can also expand to "[snazzy terminal](https://github.com/siduck/st)", which is an apt (not the package manager) description of [siduck](https://github.com/siduck/)'s fork of suckless.org's st, modified to have some extra functionality patched in and also to look kind of neat. This repo is a fork of just that, with some extra patches and configurations set to my satisfaction.
 
-<img src="https://github.com/siduck/dotfiles/blob/all/rice%20flex/live-reloadXresources.gif"> <br><br>
+## Additions
+- The [Alpha Focus Highlight patch](https://st.suckless.org/patches/alpha_focus_highlight/)
+- Variable `borderpx` is replaced with the pair `borderpx_x` and `borderpx_y` for finer control of padding
 
 ## Dependencies
-
-```
-# Void
-xbps-install libXft-devel libX11-devel harfbuzz-devel libXext-devel libXrender-devel libXinerama-devel gd-devel
-
-# Debian (and ubuntu probably)
-apt install build-essential libxft-dev libharfbuzz-dev libgd-dev
-
-# Nix
-nix develop github:siduck/st
-
-# Arch
-pacman -S gd
-
-# Fedora (or Red-Hat based)
-dnf install gd-devel libXft-devel
-
-# SUSE (or openSUSE)
-zypper in -t pattern devel_basis
-zypper in gd-devel libXft-devel harfbuzz-devel
-
-# Install font-symbola and libXft-bgra
-```
-
-## Try it out!
-
-Before you install st on your system, you might want to try it out first.
-To do so, simply run (requires [Nix](https://nixos.org/download.html))
-`nix run github:siduck/st`
-
-## Install
-
-```
-git clone https://github.com/siduck/st.git
-cd st
-(change the compiler if you cant use c99 to compile: sed -i 's/^#\ CC\ =\ c99/CC=gcc/' config.mk)
-sudo make install
-xrdb merge pathToXresourcesFile
-```
-
-(note : put the xrdb merge command in your wm's autostart or similar)
-
-### Using Nix flakes
-
-Add `st.url = "github:siduck/st";` to your inputs and install `inputs.st.packages."${system}".st-snazzy` package
-
-## Fonts
-
-- Install JetbrainsMono Mono Nerd Font or any nerd font from [here](https://www.nerdfonts.com/font-downloads)
-
-## Patches:
-
-- Ligatures
-- sixel (check sixel branch)
-- scrollback
-- Clipboard
-- Alpha(Transparency)
-- Boxdraw
-- patch_column ( doesnt cut text while resizing)
-- font2
-- right click paste
-- st desktop entry
-- newterm
-- anygeometry
-- xresources
-- sync patch ( Better draw timing to reduce flicker/tearing and improve animation smoothness )
-- live reload ( change colors/fonts on the fly )
-- st-swapmouse
-  <br>
-
-## Xresources live-reload
-
-```
-# make an alias for this command
-
-alias rel="xrdb merge pathToXresourcesFile && kill -USR1 $(pidof st)"
-```
-
-## Ram usage comparison with other terminals and speed test
-
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/rice%20flex/terminal_ramUsage.jpg"> <br><br>
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/rice%20flex/speedTest.png"> <br><br>
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/rice%20flex/speedTest1.png"> <br><br>
-
-( note : This benchmark was done on my low-end machine which has a pentium cpu so the speed results might vary )
-
-## Default Keybindings<br>
-
-<pre>
-ctrl + shift + c        Copy  <br>
-ctrl + shift + v        Paste <br>
-right click on the terminal ( will paste the copied thing )
-
-(Zoom)
-alt  + comma            Zoom in <br>
-alt  + .                Zoom out <br>
-alt  + g                Reset Zoom<br>
-
-(Transparency)
-alt  + s                Increase Transparency<br>
-alt  + a                Decrease Transparency<br>
-alt  + m                Reset Transparency<br>
-
-alt + k                 scroll down
-alt + j                 scroll up
-
-mod + shift + enter    open a new terminal with same cwd ( current working directory )
-</pre>
-
-you can change all of these in config.h
-<br>
-
-## Themes/Fonts used
-
-- ls-icons: https://github.com/Yash-Handa/logo-ls <br>
-- Xresources: onedark (just `xrdb merge xresourcesfile`, do this everytime you make any change to xresources file) from this repo itself.<br>
-- Font: JetbrainsMono Nerd Font + material design icon fonts
-
-## Screenshots:
-
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/misc/delete_this/bruh.png"> <br><br>
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/misc/delete_this/ithree0-36-43.png"> <br><br>
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/misc/delete_this/two7-00.png"> <br><br>
-<img src="https://raw.githubusercontent.com/siduck/dotfiles/all/misc/delete_this/u.png"> <br><hr>
+...are almost the same as siduck's st, which was already linked, so be sure to check it out. However, I did add an extra line to the Makefile script in order to include my [preferred colour header](https://github.com/oiaiui/eyesoreless), which I keep in `~/.local/include/` and which you will need unless you ditch and/or tamper with the supplied `config.h` header.
 
 # Credits
-
-- [live-reload](https://github.com/nimaipatel/st)
-- [patch_column](https://github.com/nimaipatel/st/blob/all/patches/7672445bab01cb4e861651dc540566ac22e25812.diff)
+- siduck
+- suckless.org
+- ...and also, of course, everything they give credit to.
