@@ -11,7 +11,9 @@
 static char *font = "Ricty Diminished NF:pixelsize=28:antialias=true:autohint=true";
 static char *font2[] = {"Liberation Mono:pixelsize=12:antialias=true:autohint=true",
 						"JetBrainsMono Nerd Font :pixelsize=15:antialias=true:autohint=true" };
-static int borderpx = 0;
+//static int borderpx = 0;
+static int borderpx_x = 16;
+static int borderpx_y = 16;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -227,7 +229,9 @@ ResourcePref resources[] = {
   { "blinktimeout", INTEGER, &blinktimeout },
   { "bellvolume",   INTEGER, &bellvolume },
   { "tabspaces",    INTEGER, &tabspaces },
-  { "borderpx",     INTEGER, &borderpx },
+  // { "borderpx",     INTEGER, &borderpx },
+  { "borderpx_x",   INTEGER, &borderpx_x },
+  { "borderpx_y",   INTEGER, &borderpx_y },
   { "cwscale",      FLOAT,   &cwscale },
   { "chscale",      FLOAT,   &chscale },
   { "alpha",        FLOAT,   &alpha },
