@@ -118,8 +118,8 @@ char *termname = "st-256color";
 unsigned int tabspaces = 4;
 
 /* bg opacity */
-float alpha = 0.9;
-float alphaUnfocused = 0.8;
+float alpha = 0.95;
+float alphaUnfocused = 0.85;
 
 static const char *colorname[] = {
 	/* 8 normal colors */
@@ -160,7 +160,7 @@ unsigned int defaultcs = 256;
 unsigned int defaultrcs = 257;
 
 // alpha+focus patch addition
-unsigned int bg = 17, bgUnfocused = 16;
+unsigned int bg = 258, bgUnfocused = 258;
 
 /*
  * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
